@@ -6,6 +6,9 @@ import { Dep } from './dep'
 
 declare const ComputedRefSymbol: unique symbol
 
+/**
+ * ComputedRef的value只读
+ */
 export interface ComputedRef<T = any> extends WritableComputedRef<T> {
   readonly value: T
   [ComputedRefSymbol]: true

@@ -59,7 +59,14 @@ export const ErrorTypeStrings: Record<LifecycleHooks | ErrorCodes, string> = {
 }
 
 export type ErrorTypes = LifecycleHooks | ErrorCodes
-
+/**
+ * 带异常处理器的执行函数
+ * @param fn 待执行的函数
+ * @param instance 组件实例
+ * @param type fn执行中出现的错误类型
+ * @param args fn执行所需参数
+ * @returns 
+ */
 export function callWithErrorHandling(
   fn: Function,
   instance: ComponentInternalInstance | null,
@@ -74,7 +81,14 @@ export function callWithErrorHandling(
   }
   return res
 }
-
+/**
+ * 带异常处理器的异步执行函数
+ * 与callWithErrorHandling不同的是，callWithAsyncErrorHandling可以接受一个fn数组
+ * @param fn 待执行的函数
+ * @param instance 组件实例
+ * @param type 执行函数会出现的错误类型
+ * @param args 执行函数所需参数
+ */
 export function callWithAsyncErrorHandling(
   fn: Function | Function[],
   instance: ComponentInternalInstance | null,

@@ -15,10 +15,17 @@ import { ComputedRefImpl } from './computed'
 // Conceptually, it's easier to think of a dependency as a Dep class
 // which maintains a Set of subscribers, but we simply store them as
 // raw Sets to reduce memory overhead.
+//存储｛target->key->dep｝连接的主要WeakMap。
+
+// 从概念上讲，更容易将依赖关系视为Dep类
+// 它维护一组订阅者，但我们只是将它们存储为
+// raw设置以减少内存开销。
 type KeyToDepMap = Map<any, Dep>
+// 存储对象与依赖关系的关系的weakMap
 const targetMap = new WeakMap<any, KeyToDepMap>()
 
 // The number of effects currently being tracked recursively.
+//当前正在递归跟踪的effects层数。
 let effectTrackDepth = 0
 
 export let trackOpBit = 1
@@ -50,6 +57,7 @@ export let activeEffect: ReactiveEffect | undefined
 export const ITERATE_KEY = Symbol(__DEV__ ? 'iterate' : '')
 export const MAP_KEY_ITERATE_KEY = Symbol(__DEV__ ? 'Map key iterate' : '')
 
+//副作用函数
 export class ReactiveEffect<T = any> {
   active = true
   deps: Dep[] = []
@@ -210,8 +218,10 @@ export function resetTracking() {
   shouldTrack = last === undefined ? true : last
 }
 
+//依赖收集
 export function track(target: object, type: TrackOpTypes, key: unknown) {
   if (shouldTrack && activeEffect) {
+    //
     let depsMap = targetMap.get(target)
     if (!depsMap) {
       targetMap.set(target, (depsMap = new Map()))

@@ -52,8 +52,10 @@ export function trackRefValue(ref: RefBase<any>) {
   }
 }
 
+//触发副作用
 export function triggerRefValue(ref: RefBase<any>, newVal?: any) {
   ref = toRaw(ref)
+  // 取副作用函数数组
   const dep = ref.dep
   if (dep) {
     if (__DEV__) {
@@ -68,8 +70,9 @@ export function triggerRefValue(ref: RefBase<any>, newVal?: any) {
     }
   }
 }
-
+//isRef
 export function isRef<T>(r: Ref<T> | unknown): r is Ref<T>
+
 export function isRef(r: any): r is Ref {
   return !!(r && r.__v_isRef === true)
 }
@@ -77,8 +80,11 @@ export function isRef(r: any): r is Ref {
 export function ref<T extends object>(
   value: T
 ): [T] extends [Ref] ? T : Ref<UnwrapRef<T>>
+
 export function ref<T>(value: T): Ref<UnwrapRef<T>>
 export function ref<T = any>(): Ref<T | undefined>
+
+//ref定义
 export function ref(value?: unknown) {
   return createRef(value, false)
 }
@@ -92,10 +98,13 @@ export function shallowRef<T extends object>(
 ): T extends Ref ? T : ShallowRef<T>
 export function shallowRef<T>(value: T): ShallowRef<T>
 export function shallowRef<T = any>(): ShallowRef<T | undefined>
+
+//shallowRef，把状态设置为true
 export function shallowRef(value?: unknown) {
   return createRef(value, true)
 }
 
+//创建ref
 function createRef(rawValue: unknown, shallow: boolean) {
   if (isRef(rawValue)) {
     return rawValue
@@ -103,8 +112,11 @@ function createRef(rawValue: unknown, shallow: boolean) {
   return new RefImpl(rawValue, shallow)
 }
 
+// 收集依赖的ref实现
 class RefImpl<T> {
+  //私有属性value，真正要读取的就是value，改的也是value
   private _value: T
+  //原始对象
   private _rawValue: T
 
   public dep?: Dep = undefined
@@ -116,6 +128,7 @@ class RefImpl<T> {
   }
 
   get value() {
+    //收集依赖
     trackRefValue(this)
     return this._value
   }
@@ -123,19 +136,22 @@ class RefImpl<T> {
   set value(newVal) {
     const useDirectValue =
       this.__v_isShallow || isShallow(newVal) || isReadonly(newVal)
+      //判断是否是浅层次或者只读
     newVal = useDirectValue ? newVal : toRaw(newVal)
     if (hasChanged(newVal, this._rawValue)) {
+      //保存原始值
       this._rawValue = newVal
       this._value = useDirectValue ? newVal : toReactive(newVal)
+      //依赖更新
       triggerRefValue(this, newVal)
     }
   }
 }
-
+// 触发依赖的函数
 export function triggerRef(ref: Ref) {
   triggerRefValue(ref, __DEV__ ? ref.value : void 0)
 }
-
+// 如果是ref则返回值，如果不是返回该对象
 export function unref<T>(ref: T | Ref<T>): T {
   return isRef(ref) ? (ref.value as any) : ref
 }
@@ -194,11 +210,12 @@ class CustomRefImpl<T> {
     this._set(newVal)
   }
 }
-
+// customRef
 export function customRef<T>(factory: CustomRefFactory<T>): Ref<T> {
   return new CustomRefImpl(factory) as any
 }
 
+//torefs
 export type ToRefs<T = any> = {
   [K in keyof T]: ToRef<T[K]>
 }
@@ -213,6 +230,7 @@ export function toRefs<T extends object>(object: T): ToRefs<T> {
   return ret
 }
 
+//objectRef实现，没有收集依赖
 class ObjectRefImpl<T extends object, K extends keyof T> {
   public readonly __v_isRef = true
 
@@ -231,6 +249,7 @@ class ObjectRefImpl<T extends object, K extends keyof T> {
     this._object[this._key] = newVal
   }
 
+  //从reactive中获取dep（保存副作用函数的集合）
   get dep(): Dep | undefined {
     return getDepFromReactive(toRaw(this._object), this._key)
   }
@@ -254,7 +273,9 @@ export function toRef<T extends object, K extends keyof T>(
   key: K,
   defaultValue?: T[K]
 ): ToRef<T[K]> {
+  //从对象上取key
   const val = object[key]
+  //是ref对象直接返回，不是再使用ObjectRefImpl(不会收集和触发依赖，但是可以获取到副作用函数集合)进行代理
   return isRef(val)
     ? val
     : (new ObjectRefImpl(object, key, defaultValue) as any)
