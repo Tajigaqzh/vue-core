@@ -214,8 +214,9 @@ function createGetter(isReadonly = false, shallow = false) {
     return res
   }
 }
-
+//创建serrer
 const set = /*#__PURE__*/ createSetter()
+//创建shallowSet
 const shallowSet = /*#__PURE__*/ createSetter(true)
 /**
  * setter拦截方法

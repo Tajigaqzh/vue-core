@@ -230,7 +230,9 @@ export function toRefs<T extends object>(object: T): ToRefs<T> {
   return ret
 }
 
-//objectRef实现，没有收集依赖
+/**
+ * objectRef实现，没有收集依赖
+ */
 class ObjectRefImpl<T extends object, K extends keyof T> {
   public readonly __v_isRef = true
 

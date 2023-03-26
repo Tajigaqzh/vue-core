@@ -94,6 +94,12 @@ export function watchEffect(
   return doWatch(effect, null, options)
 }
 
+/**
+ * watchPostEffect
+ * @param effect 
+ * @param options 
+ * @returns 
+ */
 export function watchPostEffect(
   effect: WatchEffect,
   options?: DebuggerOptions

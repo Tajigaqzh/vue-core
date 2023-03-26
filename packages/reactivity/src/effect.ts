@@ -218,7 +218,12 @@ export function resetTracking() {
   shouldTrack = last === undefined ? true : last
 }
 
-//依赖收集
+/**
+ * 依赖收集
+ * @param target 
+ * @param type 
+ * @param key 
+ */
 export function track(target: object, type: TrackOpTypes, key: unknown) {
   if (shouldTrack && activeEffect) {
     //
@@ -269,7 +274,16 @@ export function trackEffects(
     }
   }
 }
-
+/**
+ * 依赖更新
+ * @param target 
+ * @param type 
+ * @param key 
+ * @param newValue 
+ * @param oldValue 
+ * @param oldTarget 
+ * @returns 
+ */
 export function trigger(
   target: object,
   type: TriggerOpTypes,

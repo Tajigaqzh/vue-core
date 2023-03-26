@@ -1,3 +1,4 @@
+import { isReadonly } from '@vue/reactivity';
 import { DebuggerOptions, ReactiveEffect } from './effect'
 import { Ref, trackRefValue, triggerRefValue } from './ref'
 import { isFunction, NOOP } from '@vue/shared'
@@ -26,6 +27,12 @@ export interface WritableComputedOptions<T> {
   set: ComputedSetter<T>
 }
 
+/**
+ * @param getters
+ * @param setter
+ * @param isReadonly
+ * @param isSSR
+ */
 export class ComputedRefImpl<T> {
   public dep?: Dep = undefined
 

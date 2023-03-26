@@ -252,7 +252,11 @@ function createReactiveObject(
   proxyMap.set(target, proxy)
   return proxy
 }
-
+/**
+ * 判断是否是reactive
+ * @param value 要判断的值
+ * @returns boolean
+ */
 export function isReactive(value: unknown): boolean {
   if (isReadonly(value)) {
     return isReactive((value as Target)[ReactiveFlags.RAW])
