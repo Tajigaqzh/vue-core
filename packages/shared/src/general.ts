@@ -45,6 +45,7 @@ export const isRegExp = (val: unknown): val is RegExp =>
 export const isFunction = (val: unknown): val is Function =>
   typeof val === 'function'
 export const isString = (val: unknown): val is string => typeof val === 'string'
+//判断是否是Symbol
 export const isSymbol = (val: unknown): val is symbol => typeof val === 'symbol'
 //判断是否为object
 export const isObject = (val: unknown): val is Record<any, any> =>
