@@ -38,6 +38,7 @@ type RefBase<T> = {
 }
 
 export function trackRefValue(ref: RefBase<any>) {
+  // 如果允许收集并且存在activeEffect进行依赖收集
   if (shouldTrack && activeEffect) {
     ref = toRaw(ref)
     if (__DEV__) {
@@ -52,13 +53,21 @@ export function trackRefValue(ref: RefBase<any>) {
   }
 }
 
-//触发副作用
+
+/**
+ * 触发副作用
+ * @param ref ref
+ * @param newVal 新值
+ */
 export function triggerRefValue(ref: RefBase<any>, newVal?: any) {
+  //triggerRefValue中首先获取ref的原始对象，
+  //如果ref的原始对象中有dep属性，则触发dep中的依赖。
   ref = toRaw(ref)
-  // 取副作用函数数组
+  // 取依赖关系
   const dep = ref.dep
   if (dep) {
     if (__DEV__) {
+      //触发副作函数
       triggerEffects(dep, {
         target: ref,
         type: TriggerOpTypes.SET,

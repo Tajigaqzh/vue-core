@@ -156,7 +156,9 @@ function cleanupEffect(effect: ReactiveEffect) {
     deps.length = 0
   }
 }
-
+/**
+ * 依赖收集和触发依赖的钩子函数
+ */
 export interface DebuggerOptions {
   onTrack?: (event: DebuggerEvent) => void
   onTrigger?: (event: DebuggerEvent) => void
